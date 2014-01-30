@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>PhoneGap API PLay</title> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="jquery.mobile-1.1.1.min.css" />
+	
+	<script src="jquery-1.7.1.min.js"></script>
+	<script src="jquery.mobile-1.1.1.min.js"></script>
+        
+        
+            <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+
+<style>
+.center
+{
+margin:auto;
+width:95%;
+}
+.card
+{
+margin:auto;
+background-color:red;
+}
+
+</style>
+
+	
+	
+<script>
+
+var first_selection_id = "undefined";
+
+$(document).ready(function() {
+
+
+//alert("First Selecion Id = "+ first_selection_id);
+
+  
+  $(".card").click(function(){
+
+		
+	//	alert("this.Id = "+ this.id);
+        
+		this.class = "flipped"; 
+        $(this).fadeOut(300);
+  });
+  
+  
+
+  
+ });
+ 
+ 
+ /*
+   document.getElementById("result").innerHTML="You have clicked the button " + localStorage.clickcount + " time(s).";
+
+   $("p").click(function(){
+    $(this).hide();
+  });
+  //$("p:odd").css("background-color","yellow");
+
+ toDo:
+ program auto size
+ program game logic
+ 
+ 
+ notes:
+ 
+ 
+ 
+   $("p").click(function(){
+    $(this).hide();
+  });
+  
+  
+  Examples:
+
+	$(this).hide() - hides the current element.
+	$("p").hide() - hides all <p> elements.
+	$(".test").hide() - hides all elements with class="test".
+	$("#test").hide() - hides the element with id="test".
+  
+  
+
+//interesting bug.. button does functionality dissapears but it does not hide
+//its actually JQuery Mobile that messes this up:
+   $(":button").click(function(){
+    $(this).hide();
+  });
+ 
+function clickCounter()
+{
+if(typeof(Storage)!=="undefined")
+  {
+  if (localStorage.clickcount)
+    {
+    localStorage.clickcount=Number(localStorage.clickcount)+1;
+	$(this).hide();
+
+    }
+  else
+    {
+    localStorage.clickcount=1;
+    }
+  document.getElementById("result").innerHTML="You have clicked the button " + localStorage.clickcount + " time(s).";
+  }
+else
+  {
+  document.getElementById("result").innerHTML="Sorry, your browser does not support web storage...";
+  }
+}
+    
+    */
+      var pictureSource;   // picture source
+    var destinationType; // sets the format of returned value 
+
+    // Wait for Cordova to connect with the device
+    //
+    document.addEventListener("deviceready",onDeviceReady,false);
+
+    // Cordova is ready to be used!
+    //
+    function onDeviceReady() {
+        pictureSource=navigator.camera.PictureSourceType;
+        destinationType=navigator.camera.DestinationType;
+    }
+
+    // Called when a photo is successfully retrieved
+    //
+    function onPhotoDataSuccess(imageData) {
+      // Uncomment to view the base64 encoded image data
+      // console.log(imageData);
+
+      // Get image handle
+      //
+      var smallImage = document.getElementById('smallImage');
+
+      // Unhide image elements
+      //
+      smallImage.style.display = 'block';
+
+      // Show the captured photo
+      // The inline CSS rules are used to resize the image
+      //
+      smallImage.src = "data:image/jpeg;base64," + imageData;
+    }
+
+    // Called when a photo is successfully retrieved
+    //
+    function onPhotoURISuccess(imageURI) {
+      // Uncomment to view the image file URI 
+      // console.log(imageURI);
+
+      // Get image handle
+      //
+      var largeImage = document.getElementById('largeImage');
+
+      // Unhide image elements
+      //
+      largeImage.style.display = 'block';
+
+      // Show the captured photo
+      // The inline CSS rules are used to resize the image
+      //
+      largeImage.src = imageURI;
+    }
+
+    // A button will call this function
+    //
+    function capturePhoto() {
+      // Take picture using device camera and retrieve image as base64-encoded string
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
+        destinationType: destinationType.DATA_URL });
+    }
+
+    // A button will call this function
+    //
+    function capturePhotoEdit() {
+      // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+        destinationType: destinationType.DATA_URL });
+    }
+
+    // A button will call this function
+    //
+    function getPhoto(source) {
+      // Retrieve image file location from specified source
+      navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
+        destinationType: destinationType.FILE_URI,
+        sourceType: source });
+    }
+
+    // Called if something bad happens.
+    // 
+    function onFail(message) {
+      alert('Failed because: ' + message);
+    }
+   
+   
+   /*Accel*/
+  // document.addEventListener("deviceready", onDeviceReady, false);
+
+    // Cordova is ready
+    //
+    function captureAccel() {
+        navigator.accelerometer.getCurrentAcceleration(onSuccess, onError);
+    }
+
+    // onSuccess: Get a snapshot of the current acceleration
+    //
+    function onSuccess(acceleration) {
+	
+        var element = document.getElementById('AccelResult');
+        element.innerHTML += 'Acceleration X: ' + acceleration.x +
+              'Acceleration Y: ' + acceleration.y + 
+              'Acceleration Z: ' + acceleration.z + 
+              'Timestamp: '      + acceleration.timestamp + '</br>';
+    }
+
+    // onError: Failed to get the acceleration
+    //
+    //
+    function onError() {
+        alert('onError!');
+    }
+/*Compas*/
+
+
+    // Start watching the compass
+    //
+    function startWatch() {
+
+        // Update compass every 3 seconds
+        var options = { frequency: 3000 };
+
+        watchID = navigator.compass.watchHeading(onSuccess, onError, options);
+    }
+
+    // Stop watching the compass
+    //
+    function stopWatch() {
+        if (watchID) {
+            navigator.compass.clearWatch(watchID);
+            watchID = null;
+        }
+    }
+
+    // onSuccess: Get the current heading
+    //
+    function onSuccess(heading) {
+        var element = document.getElementById('heading');
+        element.innerHTML = 'Heading: ' + heading.magneticHeading;
+    }
+
+    // onError: Failed to get the heading
+    //
+    function onError(compassError) {
+        alert('Compass error: ' + compassError.code);
+    }
+
+   
+   
+</script>
+
+
+
+
+</head>
+<body>
+
+<div data-role="page" id="pageone">
+  <div data-role="header">
+  <h1>i Fone: First STepz</h1>
+  </div>
+
+  <div data-role="content">
+    <table class = "center">
+<tr>
+  <td> <button onclick="capturePhoto();">Capture Photo</button> </td>
+  <td><button onclick="capturePhotoEdit();">Capture Editable Photo</button></td>
+</tr>
+<tr>
+  <td>   <button onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button></td>
+  <td>    <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button></td>
+</tr>
+
+
+</table>
+    
+    <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
+    <img style="display:none;" id="largeImage" src="" />
+
+      
+  </div>
+
+  <div data-role="footer">
+    <a href="#pagetwo" data-role="button" data-inline="true">AccelCap</a>
+  <h1>Test H4 jquery mobile and good old html</br>Resize your browser screen</h1>
+  </div>
+</div> 
+
+<div data-role="page" id="pagetwo">
+  <div data-role="header">
+  <h1>AccelCap</h1>
+  </div>
+  <div data-role="content">
+    <table class = "center">
+<tr>
+ <td>
+	<button onclick="captureAccel();">CaptureAccelerometer</button>
+</td>
+</tr>
+<tr>
+  <td><div id="AccelResult"></div></td>
+
+</tr>
+</table>
+
+
+  </div>
+
+  <div data-role="footer">
+    <a href="#pageone" data-role="button" data-inline="true">Cam</a>
+	  <a href="#pagethree" data-role="button" data-inline="true">Compas</a>
+	<h1>This is Larger screen layout test </br> resize your screen to size of our target device</h1>
+  </div>
+</div> 
+
+
+
+
+
+<div data-role="page" id="pagethree">
+  <div data-role="header">
+  <h1>Compas First STepz</h1>
+  </div>
+
+  <div data-role="content">
+    <table class = "center">
+<tr>
+  <td><div class = "card" id="div1" style="width:80px;height:80px; "></div></td>
+  <td><div id="heading">Waiting for heading...</div></td>
+  <td><div class = "card" id="div3" style="width:80px;height:80px; "></div></td>
+</tr>
+<tr>
+  <td><button onclick="startWatch();">Start Watching</button></div></td>
+  <td><div class = "card" id="div2" style="width:80px;height:80px; "></div></td>
+  <td><button onclick="stopWatch();">Stop Watching</button></div></td>
+</tr>
+    
+    
+    
+
+
+</table>
+
+
+  </div>
+
+  <div data-role="footer">
+    <a href="#pagetwo" data-role="button" data-inline="true">Accel</a>
+  <h1>Test H4 jquery mobile and good old html</br>Resize your browser screen</h1>
+  </div>
+</div> 
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
